@@ -3,6 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    path()
+    path('', views.taskList)
 ]
  
