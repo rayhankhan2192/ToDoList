@@ -1,3 +1,12 @@
+{% if request.user.is_authenticated %}
+    <p>{{ request.user }}</p>
+    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+
+    <hr>
 <h1> My To Do List </h1>
 <a href="{% url 'task-create' %}">Add Items</a>
 
@@ -18,3 +27,8 @@
     <h3>No items in the List!</h3>
     {% endfor %}
 </table>
+{% else %}
+    <h3>Login to
+    <a href="{% url 'login' %}">LogIn</a>
+{% endif %}
+<h4> Welcome to ToDoList </h4>
