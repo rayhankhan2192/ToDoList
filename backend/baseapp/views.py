@@ -31,7 +31,7 @@ class RegisterPage(FormView):
     def form_valid(self, form):
         user = form.save()
         if user is not None:
-            login(self.request, user)
+            login(self.request, user) 
         return super(RegisterPage, self).form_valid(form)
     
     #if user is in login/authenticated, dont show the register page
@@ -51,6 +51,13 @@ class TaskList(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['tasks'] = context['tasks'].filter(user = self.request.user)
         context['count'] = context['tasks'].filter(complete = False).count()
+        
+        search_input = self.request.GET.get('search-area') or ''
+        if search_input:
+            context['tasks'] = context['tasks'].filter(
+                title__icontains = search_input
+                )
+        context['search_input'] = search_input
         return context
     
     

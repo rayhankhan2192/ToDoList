@@ -1,34 +1,71 @@
-{% if request.user.is_authenticated %}
-    <p>{{ request.user }}</p>
-    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    {% if request.user.is_authenticated %}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <p class="mb-0">Welcome, {{ request.user }}</p>
+            </div>
+            <div>
+                <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+                </form>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-danger btn-sm">Logout</a>
+            </div>
+        </div>
+        <hr>
+        <h1 class="mb-4">My To-Do List</h1>
+        <div class="mb-4">
+            <a href="{% url 'task-create' %}" class="btn btn-primary">Add Items</a>
+        </div>
+        <form method="GET" class="form-inline mb-4">
+            <input type="text" name="search-area" class="form-control mr-2" value="{{ search_input }}" placeholder="Search tasks">
+            <input type="submit" value="Search" class="btn btn-secondary">
+        </form>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Items</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>
+                        <a href="{% url 'task' task.id %}" class="btn btn-info btn-sm">View</a>
+                        <a href="{% url 'task-update' task.id %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'task-delete' task.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" class="text-center">No items in the List!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="text-center">
+            <h3>Please <a href="{% url 'login' %}">Log In</a> to access your to-do list</h3>
+        </div>
+    {% endif %}
     <hr>
-<h1> My To Do List </h1>
-<a href="{% url 'task-create' %}">Add Items</a>
-
-<table>
-    <tr>
-        <th>Items</th>
-        <th></th>
-        <th></th>
-    </tr>
-    {% for task in tasks %}
-    <tr>
-        <td>{{task.title}}</td>
-        <td><a href= "{% url 'task' task.id %}">View</a></td>
-        <td><a href= "{% url 'task-update' task.id %}">Edit</a></td>
-        <td><a href= "{% url 'task-delete' task.id %}">Delete</a></td>
-    </tr>
-    {% empty %}
-    <h3>No items in the List!</h3>
-    {% endfor %}
-</table>
-{% else %}
-    <h3>Login to
-    <a href="{% url 'login' %}">LogIn</a>
-{% endif %}
-<h4> Welcome to ToDoList </h4>
+    <h4 class="text-center">Welcome to ToDoList</h4>
+</div>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
